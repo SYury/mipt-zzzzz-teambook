@@ -18,6 +18,7 @@ def begin_document(output):
     output.write('\\usepackage{fancyhdr}\n')
     output.write('\\usepackage{minted}\n')
     output.write('\\setminted{breaklines=true, linenos=true, tabsize=2, breaksymbolleft=}\n')
+    output.write('\\usepackage[left=0.8cm, right=0.8cm, top=0.3cm, bottom=2cm, a4paper]{geometry}\n')
     output.write('\\title{MIPT zzzzz Team Reference}\n')
     output.write('\\begin{document}\n')
     output.write('{\n')
@@ -25,7 +26,7 @@ def begin_document(output):
     output.write('\\maketitle\n')
     output.write('\\tableofcontents\n')
     output.write('}\n')
-    output.write('\\thispagestyle{fancy}')
+    output.write('\\thispagestyle{fancy}\n')
     output.write('\\pagebreak\n')
 
 def end_document(output):
