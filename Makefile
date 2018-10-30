@@ -5,6 +5,7 @@ texify :
 
 compile :
 	pdflatex -shell-escape teambook.tex
+	pdflatex -shell-escape teambook.tex
 
 clean :
 	rm -f teambook.{aux,log,toc}
