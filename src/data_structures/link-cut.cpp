@@ -11,12 +11,17 @@ namespace LinkCut{
 		bool rev = false;
 		ll sum;
 		node(){}
-		node(int _value, int _id):value(_value),id(_id){sum = value;}
+		node(int _value, int _id):value(_value),id(_id){
+			sum = value;
+		}
 		node(int _value):value(_value){sum = value;}
 	};
 	int sz(node * v){return (v) ? v->sz : 0;}
 	ll sum(node * v){return (v) ? v->sum : 0;}
-	void upd_node(node * v){if(v) v->sz = 1 + sz(v->l) + sz(v->r); if(v) v->sum = v->value + sum(v->l) + sum(v->r);}
+	void upd_node(node * v){
+		if(v) v->sz = 1 + sz(v->l) + sz(v->r);
+		if(v) v->sum = v->value + sum(v->l) + sum(v->r);
+	}
 	void push(node * v){
 		if(v && v->rev){
 			if(v->l)v->l->rev ^= 1;
@@ -31,7 +36,8 @@ namespace LinkCut{
 		if(p->l == v){
 			p->l = v->r;
 			if(v->r)v->r->p = p;
-			if(p->p){if(p->p->l == p)p->p->l = v; else p->p->r = v;}
+			if(p->p){if(p->p->l == p)p->p->l = v;
+				else p->p->r = v;}
 			v->p = p->p;
 			p->p = v;
 			v->r = p;
@@ -39,7 +45,8 @@ namespace LinkCut{
 		else{
 			p->r = v->l;
 			if(v->l)v->l->p = p;
-			if(p->p){if(p->p->l == p)p->p->l = v; else p->p->r = v;}
+			if(p->p){if(p->p->l == p)p->p->l = v;
+				else p->p->r = v;}
 			v->p = p->p;
 			p->p = v;
 			v->l = p;
@@ -66,7 +73,9 @@ namespace LinkCut{
 				push(v->p->p);
 				push(v->p);
 				push(v);
-			   	if((v->p->l == v && v->p->p->l == v->p)||(v->p->r == v && v->p->p->r == v->p))zig_zig(v);
+			   	if((v->p->l == v && v->p->p->l == v->p)||
+						(v->p->r == v && v->p->p->r == v->p))
+					zig_zig(v);
 				else zig_zag(v);
 			}
 		}
@@ -141,7 +150,8 @@ namespace LinkCut{
 	}
 	ll query(node * v, node * u){
 		node * kek = lca(v, u);
-		return get_sum(v) + get_sum(u) - 2 * get_sum(kek) + kek->value;
+		return get_sum(v) + get_sum(u) -
+			2 * get_sum(kek) + kek->value;
 	}
 	void change(node * v, int nval){
 		expose(v);

@@ -38,7 +38,11 @@ struct Kuhn{
 	}
 	void solve(){
 		cc = 0;
-		for(int i = 0; i < n; i++){used[i] = 0; was[i] = false; match[i] = -1;}
+		for(int i = 0; i < n; i++){
+			used[i] = 0;
+			was[i] = false;
+			match[i] = -1;
+		}
 		for(int run = 1; run;){
 			cc++;
 			run = 0;

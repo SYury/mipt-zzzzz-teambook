@@ -1,12 +1,12 @@
-#include<bits/stdc++.h>
-
 typedef int64_t ll;
 
 //GCC only
 namespace Factor{
 	const int CNT_SMALL_PRIMES = 12;
-	const int SMALL_PRIMES[CNT_SMALL_PRIMES] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
-	std::mt19937_64 random_gen(std::chrono::steady_clock::now().time_since_epoch().count());
+	const int SMALL_PRIMES[CNT_SMALL_PRIMES] =
+	{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37};
+	mt19937_64 random_gen(
+		chrono::steady_clock::now().time_since_epoch().count());
 	inline ll gcd(ll a, ll b){
 		if(b == 0)
 			return a;
@@ -70,7 +70,8 @@ namespace Factor{
 	inline bool test_prime(ll n){
 		if(n == 1)
 			return false;
-		for(int i = 0; i < CNT_SMALL_PRIMES && SMALL_PRIMES[i] < n; i++){
+		for(int i = 0; i < CNT_SMALL_PRIMES &&
+				SMALL_PRIMES[i] < n; i++){
 			if(miller_rabin(n, SMALL_PRIMES[i]))
 				return false;
 		}
@@ -82,7 +83,7 @@ namespace Factor{
 		x -= x == mod ? mod : 0;
 		return x;
 	}
-	inline void factorize(ll n, std::vector<ll> & p){
+	inline void factorize(ll n, vector<ll> & p){
 		if(n == 1)
 			return;
 		if(test_prime(n)){

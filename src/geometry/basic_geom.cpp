@@ -1,7 +1,3 @@
-#include<bits/stdc++.h>
-
-using namespace std;
-
 typedef long double dbl;
 
 constexpr dbl eps = 1e-9;
@@ -48,18 +44,37 @@ struct pt{
 	pt(){}
 	pt(dbl a, dbl b):x(a), y(b){}
 	pt(const pt & a):x(a.x), y(a.y){}
-	pt& operator = (const pt & a){x = a.x; y = a.y; return *this;}
-	pt operator + (const pt & a)const{return pt(x + a.x, y + a.y);}
-	pt operator - (const pt & a)const{return pt(x - a.x, y - a.y);}
-	pt operator * (dbl a)const{return pt(x * a, y * a);}
-	pt operator / (dbl a)const{assert(fabs(a) > eps); return pt(x / a, y / a);}
-	pt& operator += (const pt & a){x += a.x; y += a.y; return *this;}
-	pt& operator -= (const pt & a){x -= a.x; y -= a.y; return *this;}
-	pt& operator *= (dbl a){x *= a; y *= a; return *this;}
-	pt& operator /= (dbl a){assert(fabs(a) > eps); x /= a; y /= a; return *this;}
-	bool isZero()const{return fabs(x) < eps && fabs(y) < eps;}
-	bool operator == (const pt & a)const{return (*this - a).isZero();}
-	bool operator != (const pt & a)const{return !(*this == a);}
+	pt& operator = (const pt & a){
+		x = a.x; y = a.y;
+		return *this;
+	}
+	pt operator + (const pt & a)const{
+		return pt(x + a.x, y + a.y);
+	}
+	pt operator - (const pt & a)const{
+		return pt(x - a.x, y - a.y);
+	}
+	pt operator * (dbl a)const{
+		return pt(x * a, y * a);
+	}
+	pt operator / (dbl a)const{
+		return pt(x / a, y / a);
+	}
+	pt& operator += (const pt & a){x += a.x; y += a.y; 
+		return *this;}
+	pt& operator -= (const pt & a){x -= a.x; y -= a.y;
+		return *this;}
+	pt& operator *= (dbl a){x *= a; y *= a;
+		return *this;}
+	pt& operator /= (dbl a){
+		x /= a; y /= a; return *this;}
+	bool isZero()const{return eq(x, 0) && eq(y, 0);}
+	bool operator == (const pt & a)const{
+		return (*this - a).isZero();
+	}
+	bool operator != (const pt & a)const{
+		return !(*this == a);
+	}
 	dbl cross(const pt & a)const{return x * a.y - y * a.x;}
 	dbl cross(pt a, pt b)const{
 		a -= *this; b -= *this;
@@ -72,21 +87,28 @@ struct pt{
 	}
 	dbl length()const{return sqrt(sqr(x) + sqr(y));}
 	dbl sqrLength()const{return x * x + y * y;}
-	void normalizeSelf(dbl len = 1.0){*this /= length(); *this *= len;}
+	void normalizeSelf(dbl len = 1.0){
+		*this /= length();
+		*this *= len;
+	}
 	pt normalize(dbl len = 1.0)const{
 		pt res(*this);
 		res.normalizeSelf(len);
 		return res;
 	}
-	dbl dist(const pt & a)const{return (*this - a).length();}
+	dbl dist(const pt & a)const{
+		return (*this - a).length();
+	}
 	dbl angle()const{return atan2(y, x);}
 	void rotateSelf(dbl phi){
 		dbl pcos = cos(phi), psin = sin(phi);
-		dbl nx = x * pcos - y * psin, ny = y * pcos + x * psin;
+		dbl nx = x * pcos - y * psin,
+			ny = y * pcos + x * psin;
 		x = nx; y = ny;
 	}
 	void rotateSelf(dbl cosphi, dbl sinphi){
-		dbl nx = x * cosphi - y * sinphi, ny = y * cosphi + x * sinphi;
+		dbl nx = x * cosphi - y * sinphi,
+			ny = y * cosphi + x * sinphi;
 		x = nx; y = ny;
 	}
 	pt rotate(dbl phi)const{
@@ -128,21 +150,28 @@ inline pt trCent(pt a, pt b, pt c){
 }
 
 inline pt trIncent(pt a, pt b, pt c){
-	return trBary(a, b, c, (b - c).length(), (c - a).length(), (a - b).length());
+	return trBary(a, b, c, (b - c).length(),
+			(c - a).length(), (a - b).length());
 }
 
 inline pt trCirc(pt a, pt b, pt c){
-	dbl la = (b - c).sqrLength(), lb = (c - a).sqrLength(), lc = (a - b).sqrLength();
-	return trBary(a, b, c, la * (lb + lc - la), lb * (lc + la - lb), lc * (la + lb - lc));
+	dbl la = (b - c).sqrLength(),
+		lb = (c - a).sqrLength(), lc = (a - b).sqrLength();
+	return trBary(a, b, c, la * (lb + lc - la),
+			lb * (lc + la - lb), lc * (la + lb - lc));
 }
 
 inline pt trOrth(pt a, pt b, pt c){
-	dbl la = (b - c).sqrLength(), lb = (c - a).sqrLength(), lc = (a - b).sqrLength();
-	return trBary(a, b, c, (la + lb - lc) * (la + lc - lb), (lb + la - lc) * (lb + lc - la), (lc + la - lb) * (lc + lb - la));
+	dbl la = (b - c).sqrLength(),
+		lb = (c - a).sqrLength(), lc = (a - b).sqrLength();
+	return trBary(a, b, c, (la + lb - lc) * (la + lc - lb),
+			(lb + la - lc) * (lb + lc - la),
+			(lc + la - lb) * (lc + lb - la));
 }
 
 inline pt trExc(pt a, pt b, pt c){
-	dbl la = (b - c).length(), lb = (c - a).length(), lc = (a - b).length();
+	dbl la = (b - c).length(),
+		lb = (c - a).length(), lc = (a - b).length();
 	return trBary(a, b, c, -la, lb, lc);
 }
 
@@ -175,7 +204,9 @@ struct Line{
 		p[0] = l.p[0]; p[1] = l.p[1];
 		a = l.a; b = l.b; c = l.c;	
 	}
-	vector<dbl> getEquation()const{return vector<dbl>{a, b, c};}
+	vector<dbl> getEquation()const{
+		return vector<dbl>{a, b, c};
+	}
 	vector<dbl> getNormEquation()const{
 		Line tmp(*this);
 		tmp.normalizeEquation();
@@ -231,9 +262,15 @@ struct Circle{
 	pt getByAngle(dbl ang)const{
 		return c + pt(r * cos(ang), r * sin(ang));
 	}
-	bool hasPointCircle(const pt & p){return c.dist(p) < r + eps;}
-	bool onPointCircle(const pt & p){return eq(c.dist(p), r);}
-	bool inPointCircle(const pt & p){return hasPointCircle(p) && !onPointCircle(p);}
+	bool hasPointCircle(const pt & p){
+		return c.dist(p) < r + eps;
+	}
+	bool onPointCircle(const pt & p){
+		return eq(c.dist(p), r);
+	}
+	bool inPointCircle(const pt & p){
+		return hasPointCircle(p) && !onPointCircle(p);
+	}
 };
 
 pt projPtLine(pt p, Line l){
@@ -278,20 +315,27 @@ vector<pt> interSegSeg(Line l1, Line l2){
 		if(!lexComp(l1[0], l1[1]))swap(l1[0], l1[1]);
 		if(!lexComp(l2[0], l2[1]))swap(l2[0], l2[1]);
 		vector<pt> res(2);
-		if(lexComp(l1[0], l2[0]))res[0] = l2[0]; else res[0] = l1[0];
-		if(lexComp(l1[1], l2[1]))res[1] = l1[1]; else res[1] = l2[1];
+		if(lexComp(l1[0], l2[0]))res[0] = l2[0];
+		else res[0] = l1[0];
+		if(lexComp(l1[1], l2[1]))res[1] = l1[1];
+		else res[1] = l2[1];
 		if(res[0] == res[1])res.pop_back();
-		if((int)res.size() == 2 && lexComp(res[1], res[0]))return {};
+		if((int)res.size() == 2 &&
+				lexComp(res[1], res[0]))return {};
 		else return res;
 	}
 	pt cand = li[0];
-	if(l1.hasPointSeg(cand) && l2.hasPointSeg(cand))return {cand};
+	if(l1.hasPointSeg(cand) && l2.hasPointSeg(cand))
+		return {cand};
 	else return {};
 }
 
 vector<pt> interLineSeg(Line l1, Line l2){
 	if(abs((l1[0] - l1[1]).cross(l2[0] - l2[1])) < eps){
-		if(l1.hasPointLine(l2[0])){if(lexComp(l2[1], l2[0])) return {l2[1], l2[0]}; else return {l2[0], l2[1]};}
+		if(l1.hasPointLine(l2[0])){
+			if(lexComp(l2[1], l2[0])) return {l2[1], l2[0]};
+			else return {l2[0], l2[1]};
+		}
 		else return {};
 	}
 	pt cand = interLineLine(l1, l2)[0];
@@ -321,7 +365,8 @@ vector<pt> interSegCircle(Line l, Circle c){
 vector<pt> interCircleCircle(Circle c1, Circle c2){
 	if(c1.r + eps < c2.r)swap(c1, c2);
 	if(c1 == c2){
-		return {c1.getByAngle(0), c1.getByAngle(PI/2), c1.getByAngle(PI)};
+		return {c1.getByAngle(0), c1.getByAngle(PI/2),
+			c1.getByAngle(PI)};
 	}
 	pt vec = c2.c - c1.c;
 	dbl d = vec.length();
@@ -329,9 +374,12 @@ vector<pt> interCircleCircle(Circle c1, Circle c2){
 	dbl longest = max(max(c1.r, c2.r), d);
 	dbl per = c1.r + c2.r + d;
 	if(2 * longest > per + eps)return {};
-	if(abs(2 * longest - per) < 2 * eps)return {c1.getByAngle(ang)};
-	dbl cang = safe_acos((sqr(c1.r) + sqr(d) - sqr(c2.r))/(2*c1.r*d));
-	return {c1.getByAngle(ang + cang), c1.getByAngle(ang - cang)};
+	if(abs(2 * longest - per) < 2 * eps)
+		return {c1.getByAngle(ang)};
+	dbl cang =
+		safe_acos((sqr(c1.r) + sqr(d) - sqr(c2.r))/(2*c1.r*d));
+	return {c1.getByAngle(ang + cang),
+		c1.getByAngle(ang - cang)};
 }
 
 vector<pt> tangentsPtCircle(pt p, Circle c){
@@ -340,7 +388,8 @@ vector<pt> tangentsPtCircle(pt p, Circle c){
 	if(fabs(d - c.r) < eps)return {p};
 	dbl ang = safe_acos(c.r/d);
 	dbl cang = (p - c.c).angle();
-	return {c.getByAngle(cang - ang), c.getByAngle(cang + ang)};
+	return {c.getByAngle(cang - ang),
+		c.getByAngle(cang + ang)};
 }
 
 vector<Line> outerTangents(Circle c1, Circle c2){
@@ -350,15 +399,18 @@ vector<Line> outerTangents(Circle c1, Circle c2){
 	if(c1.r + d < c2.r - eps)return {};
 	if(fabs(c1.r - c2.r) < eps){
 		dbl ang = (c2.c - c1.c).angle();
-		pt l = c1.getByAngle(ang + PI/2), r = c1.getByAngle(ang - PI/2);	
-		return {{l, l + (c2.c - c1.c)}, {r, r + (c2.c - c1.c)}};
+		pt l = c1.getByAngle(ang + PI/2),
+		   r = c1.getByAngle(ang - PI/2);	
+		return {{l, l + (c2.c - c1.c)},
+			{r, r + (c2.c - c1.c)}};
 	}
 	pt p = c2.c + (c1.c - c2.c) * (c2.r/(c2.r - c1.r));
 	if(c1.r + d < c2.r + eps){
 		return {{p, p + (c1.c - c2.c).rotate(PI/2)}};
 	}
 	dbl ang = safe_asin((c2.r - c1.r)/d);
-	return {{p, p + (c1.c - p).rotate(ang)}, {p, p + (c1.c - p).rotate(-ang)}};
+	return {{p, p + (c1.c - p).rotate(ang)},
+		{p, p + (c1.c - p).rotate(-ang)}};
 }
 
 vector<Line> innerTangents(Circle c1, Circle c2){
@@ -372,12 +424,14 @@ vector<Line> innerTangents(Circle c1, Circle c2){
 	}
 	dbl ang = safe_acos(c1.r/(p - c1.c).length());
 	dbl cang = (p - c1.c).angle();
-	pt l = c1.getByAngle(cang + ang), r = c1.getByAngle(cang - ang);
+	pt l = c1.getByAngle(cang + ang),
+	   r = c1.getByAngle(cang - ang);
 	return {{p, l}, {p, r}};
 }
 
 vector<Line> allTangents(Circle c1, Circle c2){
-	auto kek = outerTangents(c1, c2), bishkek = innerTangents(c1, c2);
+	auto kek = outerTangents(c1, c2),
+		 bishkek = innerTangents(c1, c2);
 	for(auto lol : kek)bishkek.push_back(lol);
 	return bishkek;
 }
@@ -386,8 +440,12 @@ struct Polygon{
 	vector<pt> p;
 	Polygon():p(vector<pt>()){}
 	Polygon(vector<pt> pts):p(pts){}
-	int nxt(int i)const{return (i + 1 == (int)p.size()) ? 0 : (i + 1);}
-	int prv(int i)const{return (i == 0) ? ((int)p.size()-1) : (i-1);}
+	int nxt(int i)const{
+		return (i + 1 == (int)p.size()) ? 0 : (i + 1);
+	}
+	int prv(int i)const{
+		return (i == 0) ? ((int)p.size()-1) : (i-1);
+	}
 	int size()const{return (int)p.size();}
 	pt& operator[](const int & i){return p[i];}
 	const pt& operator[](const int & i)const{return p[i];}
@@ -395,7 +453,8 @@ struct Polygon{
 	void clear(){p.clear();}
 	dbl area(){
 		dbl res = 0;
-		for(int i = 0; i < (int)p.size(); i++)res += p[i].cross(p[nxt(i)]);
+		for(int i = 0; i < (int)p.size(); i++)
+			res += p[i].cross(p[nxt(i)]);
 		return res/2;
 	}
 	void orientCCW(){

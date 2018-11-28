@@ -14,10 +14,14 @@ struct edmonds{
 	void init(int _n, vector<pair<int, int> > & e){	
 		n = _n;
 		for(int i = 0; i < n; i++)gr[i].clear();
-		for(auto c : e){gr[c.first].push_back(c.second); gr[c.second].push_back(c.first);}
+		for(auto c : e){
+			gr[c.first].push_back(c.second);
+			gr[c.second].push_back(c.first);
+		}
 	}
 	int lca(int v, int u){
-		for(int i = 0; i < n; i++)lca_used[i] = false;
+		for(int i = 0; i < n; i++)
+			lca_used[i] = false;
 		while(true){
 			v = base[v];
 			lca_used[v] = true;
@@ -46,10 +50,13 @@ struct edmonds{
 		while(qh < qt){
 			int v = q[qh++];
 			for(auto u : gr[v]){
-				if(base[v] == base[u] || match[v] == u)continue;
-				if(u == start || (match[u] != -1 && p[match[u]] != -1)){
+				if(base[v] == base[u] || match[v] == u)
+					continue;
+				if(u == start ||
+						(match[u] != -1 && p[match[u]] != -1)){
 					int b = lca(v, u);
-					for(int i = 0; i < n; i++)blossom[i] = false;
+					for(int i = 0; i < n; i++)
+						blossom[i] = false;
 					blossom_path(v, b, u);
 					blossom_path(u, b, v);
 					for(int i = 0; i < n; i++){
@@ -61,7 +68,10 @@ struct edmonds{
 				else if(p[u] == -1){
 					p[u] = v;
 					if(match[u] == -1)return u;
-					if(match[u] != -1){inq[match[u]] = true; q[qt++] = match[u];}
+					if(match[u] != -1){
+						inq[match[u]] = true;
+						q[qt++] = match[u];
+					}
 				}
 			}
 		}
@@ -71,8 +81,10 @@ struct edmonds{
 		fill(match, match + n, -1);
 		for(int i = 0; i < n; i++){
 			if(match[i] == -1){
-				for(int j = 0; j < n; j++){p[j] = -1; inq[j] = false;}
-				for(int j = 0; j < n; j++)base[j] = j;
+				fill(p, p + n, -1);
+				fill(inq, inq + n, false);
+				for(int j = 0; j < n; j++)
+					base[j] = j;
 				int j = find_path(i);
 				while(j != -1){
 					int prv = p[j], up = match[prv];

@@ -8,33 +8,44 @@ Polygon convex_intersection(Polygon a, Polygon b){
 	for(int useless_var = 0; useless_var < 2; useless_var++){
 		i = 0; k = 0;
 		for(j = 1; j < a.size(); j++){
-			if(lt(a[j].x, a[i].x) || (eq(a[j].x, a[i].x) && lt(a[j].y, a[i].y)))i = j;
-			if(gt(a[j].x, a[k].x) || (eq(a[j].x, a[k].x) && gt(a[j].y, a[i].y)))k = j;
+			if(lt(a[j].x, a[i].x) ||
+					(eq(a[j].x, a[i].x) && lt(a[j].y, a[i].y)))
+				i = j;
+			if(gt(a[j].x, a[k].x) ||
+					(eq(a[j].x, a[k].x) && gt(a[j].y, a[i].y)))
+				k = j;
 		}
 		j = i;
 		vector<dbl> lol;
 		while(j != k){
-			if(lol.empty() || !eq(lol.back(), a[j].x))lol.push_back(a[j].x);
+			if(lol.empty() || !eq(lol.back(), a[j].x))
+				lol.push_back(a[j].x);
 			j = a.nxt(j);
 		}
-		merge(lol.begin(), lol.end(), xpos.begin(), xpos.begin() + xptr, tmp.begin(), lt);
+		merge(lol.begin(), lol.end(), xpos.begin(),
+				xpos.begin() + xptr, tmp.begin(), lt);
 		xptr += lol.size();
-		for(int idx = 0; idx < xptr; idx++)xpos[idx] = tmp[idx];
+		for(int idx = 0; idx < xptr; idx++)
+			xpos[idx] = tmp[idx];
 		lol.clear();
 		while(j != i){
-			if(lol.empty() || !eq(lol.back(), a[j].x))lol.push_back(a[j].x);
+			if(lol.empty() || !eq(lol.back(), a[j].x))
+				lol.push_back(a[j].x);
 			j = a.nxt(j);
 		}
 		reverse(lol.begin(), lol.end());
-		merge(lol.begin(), lol.end(), xpos.begin(), xpos.begin() + xptr, tmp.begin(), lt);
+		merge(lol.begin(), lol.end(), xpos.begin(),
+				xpos.begin() + xptr, tmp.begin(), lt);
 		xptr += lol.size();
-		for(int idx = 0; idx < xptr; idx++)xpos[idx] = tmp[idx];
+		for(int idx = 0; idx < xptr; idx++)
+			xpos[idx] = tmp[idx];
 		lol.clear();
 		swap(i, oi);
 		swap(k, ok);
 		a.p.swap(b.p);
 	}
-	xpos.resize(unique(xpos.begin(), xpos.end(), eq) - xpos.begin());
+	xpos.resize(unique(xpos.begin(), xpos.end(), eq)
+			- xpos.begin());
 	vector<dbl>().swap(tmp);
 	vector<dbl> x(xpos.begin(), xpos.end());
 	vector<dbl>().swap(xpos);
@@ -49,9 +60,16 @@ Polygon convex_intersection(Polygon a, Polygon b){
 			int j0 = a.nxt(j);
 			pt left_p = a[j];
 			Line curr_line = Line(a[j], a[j0]);
-			if(eq(a[j].x, a[j0].x)){vert[pos].push_back(a[j].y < a[j0].y ? Line(a[j], a[j0]) : Line(a[j0], a[j])); j = j0; continue;}
+			if(eq(a[j].x, a[j0].x)){
+				vert[pos].push_back(a[j].y < a[j0].y ?
+						Line(a[j], a[j0]) : Line(a[j0], a[j]));
+				j = j0;
+				continue;
+			}
 			while(lt(x[pos], a[j0].x)){
-				pt right_p = interLineLine(curr_line, Line(pt(x[pos + 1], 0), pt(x[pos + 1], 1)))[0];
+				pt right_p = interLineLine(curr_line,
+						Line(pt(x[pos + 1], 0),
+							pt(x[pos + 1], 1)))[0];
 				up[pos].push_back(Line(left_p, right_p));
 				++pos;
 				left_p = right_p;
@@ -62,9 +80,17 @@ Polygon convex_intersection(Polygon a, Polygon b){
 			int j0 = a.nxt(j);
 			pt right_p = a[j];
 			Line curr_line = Line(a[j], a[j0]);
-			if(eq(a[j].x, a[j0].x)){vert[pos].push_back(a[j].y < a[j0].y ? Line(a[j], a[j0]) : Line(a[j0], a[j])); j = j0; continue;}
+			if(eq(a[j].x, a[j0].x)){
+				vert[pos].push_back(a[j].y < a[j0].y ?
+						Line(a[j], a[j0]) :
+						Line(a[j0], a[j]));
+				j = j0;
+				continue;
+			}
 			while(gt(x[pos], a[j0].x)){
-				pt left_p = interLineLine(curr_line, Line(pt(x[pos - 1], 0), pt(x[pos - 1], 1)))[0];
+				pt left_p = interLineLine(curr_line,
+						Line(pt(x[pos - 1], 0),
+							pt(x[pos - 1], 1)))[0];
 				down[pos - 1].push_back(Line(left_p, right_p));
 				--pos;
 				right_p = left_p;
@@ -78,14 +104,19 @@ Polygon convex_intersection(Polygon a, Polygon b){
 	vector<pt> up_hull, down_hull;
 	auto add_point = [](vector<pt> & v, const pt & p){
 		while(!v.empty() && v.back() == p)return;
-		while(v.size() >= 2u && eq(fabs(v[v.size() - 1].cross(v[v.size() - 2], p)), 0))v.pop_back();
+		while(v.size() >= 2u &&
+				eq(fabs(v[v.size() - 1].cross(v[v.size() - 2], p)), 0))
+			v.pop_back();
 		v.push_back(p);
 	};
 	for(int pos = 0; pos < SX; pos++){
 		if(vert[pos].size() == 2u){
 			dbl r = min(vert[pos][0][1].y, vert[pos][1][1].y);
 			dbl l = max(vert[pos][0][0].y, vert[pos][1][0].y);
-			if(lt(l, r)){add_point(up_hull, pt(x[pos], r)); add_point(down_hull, pt(x[pos], l));}
+			if(lt(l, r)){
+				add_point(up_hull, pt(x[pos], r));
+				add_point(down_hull, pt(x[pos], l));
+			}
 			else if(eq(l, r))add_point(up_hull, pt(x[pos], (l + r)/2));
 		}
 		if(up[pos].size() < 2u)continue;
@@ -109,31 +140,58 @@ Polygon convex_intersection(Polygon a, Polygon b){
 		pt l, r;
 		switch(tot){
 			case 0:
-				l = up[pos][0][0].y < up[pos][1][0].y ? up[pos][0][0] : up[pos][1][0];
-				r = down[pos][0][0].y > down[pos][1][0].y ? down[pos][0][0] : down[pos][1][0];
+				l = up[pos][0][0].y < up[pos][1][0].y ?
+					up[pos][0][0] : up[pos][1][0];
+				r = down[pos][0][0].y > down[pos][1][0].y ?
+					down[pos][0][0] : down[pos][1][0];
 				if(r.y > l.y)break;
-				add_point(up_hull, up[pos][0][0].y < up[pos][1][0].y ? up[pos][0][0] : up[pos][1][0]);
-				if(kek2.size() == 1u)add_point(up_hull, kek2[0]);
-				add_point(up_hull, up[pos][0][1].y < up[pos][1][1].y ? up[pos][0][1] : up[pos][1][1]);
-				add_point(down_hull, down[pos][0][0].y > down[pos][1][0].y ? down[pos][0][0] : down[pos][1][0]);
-				if(kek3.size() == 1u)add_point(down_hull, kek3[0]);
-				add_point(down_hull, down[pos][0][1].y > down[pos][1][1].y ? down[pos][0][1] : down[pos][1][1]);
+				add_point(up_hull,
+						up[pos][0][0].y < up[pos][1][0].y ?
+						up[pos][0][0] : up[pos][1][0]);
+				if(kek2.size() == 1u)
+					add_point(up_hull, kek2[0]);
+				add_point(up_hull,
+						up[pos][0][1].y < up[pos][1][1].y ?
+						up[pos][0][1] : up[pos][1][1]);
+				add_point(down_hull,
+						down[pos][0][0].y > down[pos][1][0].y ?
+						down[pos][0][0] : down[pos][1][0]);
+				if(kek3.size() == 1u)
+					add_point(down_hull, kek3[0]);
+				add_point(down_hull,
+						down[pos][0][1].y > down[pos][1][1].y ?
+						down[pos][0][1] : down[pos][1][1]);
 			break;
 			case 1:
 				base_d = kek1.empty();
-				if(down[pos][base_d][1].y < up[pos][base_d^1][1].y){
-					add_point(up_hull, kek1.empty() ? kek0[0] : kek1[0]);
-					if(kek2.size() == 1u)add_point(up_hull, kek2[0]);
-					add_point(up_hull, up[pos][0][1].y < up[pos][1][1].y ? up[pos][0][1] : up[pos][1][1]);
-					if(kek3.size() == 1u)add_point(down_hull, kek3[0]);
-					add_point(down_hull, down[pos][0][1].y > down[pos][1][1].y ? down[pos][0][1] : down[pos][1][1]);
+				if(down[pos][base_d][1].y <
+						up[pos][base_d^1][1].y){
+					add_point(up_hull, kek1.empty() ?
+							kek0[0] : kek1[0]);
+					if(kek2.size() == 1u)
+						add_point(up_hull, kek2[0]);
+					add_point(up_hull,
+							up[pos][0][1].y < up[pos][1][1].y ?
+							up[pos][0][1] : up[pos][1][1]);
+					if(kek3.size() == 1u)
+						add_point(down_hull, kek3[0]);
+					add_point(down_hull,
+							down[pos][0][1].y > down[pos][1][1].y ?
+							down[pos][0][1] : down[pos][1][1]);
 				}
 				else{	
-					add_point(up_hull, up[pos][0][0].y < up[pos][1][0].y ? up[pos][0][0] : up[pos][1][0]);
-					if(kek2.size() == 1u)add_point(up_hull, kek2[0]);
-					add_point(up_hull, kek1.empty() ? kek0[0] : kek1[0]);
-					add_point(down_hull, down[pos][0][0].y > down[pos][1][0].y ? down[pos][0][0] : down[pos][1][0]);
-					if(kek3.size() == 1u)add_point(down_hull, kek3[0]);
+					add_point(up_hull,
+							up[pos][0][0].y < up[pos][1][0].y ?
+							up[pos][0][0] : up[pos][1][0]);
+					if(kek2.size() == 1u)
+						add_point(up_hull, kek2[0]);
+					add_point(up_hull, kek1.empty() ?
+							kek0[0] : kek1[0]);
+					add_point(down_hull,
+							down[pos][0][0].y > down[pos][1][0].y ?
+							down[pos][0][0] : down[pos][1][0]);
+					if(kek3.size() == 1u)
+						add_point(down_hull, kek3[0]);
 				}
 			break;
 			case 2:
@@ -141,14 +199,19 @@ Polygon convex_intersection(Polygon a, Polygon b){
 				r = kek0[0];
 				if(l.x > r.x)swap(l, r);
 				add_point(up_hull, l);
-				if(kek2.size() == 1u)add_point(up_hull, kek2[0]);
+				if(kek2.size() == 1u)
+					add_point(up_hull, kek2[0]);
 				add_point(up_hull, r);
-				if(kek3.size() == 1u)add_point(down_hull, kek3[0]);
+				if(kek3.size() == 1u)
+					add_point(down_hull, kek3[0]);
 			break;
 		};
 	}
-	for(int pos = (int)down_hull.size() - 1; pos >= 0; pos--){
-		if(up_hull.empty() || up_hull.back() != down_hull[pos])up_hull.push_back(down_hull[pos]);
+	for(int pos = (int)down_hull.size() - 1;
+			pos >= 0; pos--){
+		if(up_hull.empty() ||
+				up_hull.back() != down_hull[pos])
+			up_hull.push_back(down_hull[pos]);
 	}
 	return up_hull;
 }

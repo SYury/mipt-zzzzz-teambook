@@ -88,26 +88,38 @@ bool right_of(pt p, QuadEdge * e){
 
 template<class T>
 T det3(T a1, T a2, T a3, T b1, T b2, T b3, T c1, T c2, T c3){
-	return a1 * (b2 * c3 - c2 * b3) - a2 * (b1 * c3 - c1 * b3) + a3 * (b1 * c2 - c1 * b2);
+	return a1 * (b2 * c3 - c2 * b3) -
+		a2 * (b1 * c3 - c1 * b3) + a3 * (b1 * c2 - c1 * b2);
 }
 
 bool in_circle(pt a, pt b, pt c, pt d){
 	//If there is __int128, calculate directly.
 	//Otherwise, calculate angles.
 	#if defined(__LP64__) || defined(_WIN64)
-		__int128 det = -det3<__int128>(b.x, b.y, b.sqrLength(), c.x, c.y, c.sqrLength(), d.x, d.y, d.sqrLength());
-		det += det3<__int128>(a.x, a.y, a.sqrLength(), c.x, c.y, c.sqrLength(), d.x, d.y, d.sqrLength());
-		det -= det3<__int128>(a.x, a.y, a.sqrLength(), b.x, b.y, b.sqrLength(), d.x, d.y, d.sqrLength());
-		det += det3<__int128>(a.x, a.y, a.sqrLength(), b.x, b.y, b.sqrLength(), c.x, c.y, c.sqrLength());
+		__int128 det = -det3<__int128>(b.x, b.y,
+				b.sqrLength(), c.x, c.y,
+				c.sqrLength(), d.x, d.y,
+				d.sqrLength());
+		det += det3<__int128>(a.x, a.y, a.sqrLength(),
+				c.x, c.y, c.sqrLength(),
+				d.x, d.y, d.sqrLength());
+		det -= det3<__int128>(a.x, a.y, a.sqrLength(),
+				b.x, b.y, b.sqrLength(),
+				d.x, d.y, d.sqrLength());
+		det += det3<__int128>(a.x, a.y, a.sqrLength(),
+				b.x, b.y, b.sqrLength(),
+				c.x, c.y, c.sqrLength());
 		return det > 0;
 	#else
 		auto ang = [](pt l, pt mid, pt r){
 			ll x = mid.dot(l, r);
 			ll y = mid.cross(l, r);
-			long double res = atan2((long double)x, (long double)y);
+			long double res =
+				atan2((long double)x, (long double)y);
 			return res;
 		};
-		long double kek = ang(a, b, c) + ang(c, d, a) - ang(b, c, d) - ang(d, a, b);
+		long double kek = ang(a, b, c) + ang(c, d, a) -
+			ang(b, c, d) - ang(d, a, b);
 		if(kek > 1e-8)
 			return true;
 		else
@@ -115,13 +127,15 @@ bool in_circle(pt a, pt b, pt c, pt d){
 	#endif
 }
 
-pair<QuadEdge*, QuadEdge*> build_tr(int l, int r, vector<pt> & p){
+pair<QuadEdge*, QuadEdge*>
+build_tr(int l, int r, vector<pt> & p){
 	if(r - l + 1 == 2){
 		QuadEdge * res = make_edge(p[l], p[r]);
 		return make_pair(res, res->rev());
 	}
 	if(r - l + 1 == 3){
-		QuadEdge * a = make_edge(p[l], p[l + 1]), * b = make_edge(p[l + 1], p[r]);
+		QuadEdge * a = make_edge(p[l], p[l + 1]),
+				 * b = make_edge(p[l + 1], p[r]);
 		splice(a->rev(), b);
 		int sg = sgn(p[l].cross(p[l + 1], p[r]));
 		if(sg == 0)
@@ -148,7 +162,9 @@ pair<QuadEdge*, QuadEdge*> build_tr(int l, int r, vector<pt> & p){
 		break;
 	}
 	QuadEdge * basel = connect(rdi->rev(), ldi);
-	auto valid = [&basel](QuadEdge * e){ return right_of(e->dest(), basel); };
+	auto valid = [&basel](QuadEdge * e){
+		return right_of(e->dest(), basel);
+	};
 	if(ldi->origin == ldo->origin)
 		ldo = basel->rev();
 	if(rdi->origin == rdo->origin)
@@ -156,7 +172,9 @@ pair<QuadEdge*, QuadEdge*> build_tr(int l, int r, vector<pt> & p){
 	while(true){
 		QuadEdge * lcand = basel->rev()->onext;
 		if(valid(lcand)){
-			while(in_circle(basel->dest(), basel->origin, lcand->dest(), lcand->onext->dest())){
+			while(in_circle(basel->dest(), basel->origin,
+						lcand->dest(),
+						lcand->onext->dest())){
 				QuadEdge * t = lcand->onext;
 				delete_edge(lcand);
 				lcand = t;
@@ -164,7 +182,9 @@ pair<QuadEdge*, QuadEdge*> build_tr(int l, int r, vector<pt> & p){
 		}
 		QuadEdge * rcand = basel->oprev();
 		if(valid(rcand)){
-			while(in_circle(basel->dest(), basel->origin, rcand->dest(), rcand->oprev()->dest())){
+			while(in_circle(basel->dest(), basel->origin,
+						rcand->dest(),
+						rcand->oprev()->dest())){
 				QuadEdge * t = rcand->oprev();
 				delete_edge(rcand);
 				rcand = t;
@@ -172,7 +192,11 @@ pair<QuadEdge*, QuadEdge*> build_tr(int l, int r, vector<pt> & p){
 		}
 		if(!valid(lcand) && !valid(rcand))
 			break;
-		if(!valid(lcand) || (valid(rcand) && in_circle(lcand->dest(), lcand->origin, rcand->origin, rcand->dest())))
+		if(!valid(lcand) ||
+				(valid(rcand) &&
+				 in_circle(lcand->dest(),
+					 lcand->origin,
+					 rcand->origin, rcand->dest())))
 			basel = connect(rcand, basel->rev());
 		else
 			basel = connect(basel->rev(), lcand->rev());
@@ -181,7 +205,9 @@ pair<QuadEdge*, QuadEdge*> build_tr(int l, int r, vector<pt> & p){
 }
 
 vector<tuple<pt, pt, pt> > delaunay(vector<pt> p){
-	sort(p.begin(), p.end(), [](const pt & a, const pt & b){return lt(a.x, b.x) || (eq(a.x, b.x) && lt(a.y, b.y));});
+	sort(p.begin(), p.end(), [](const pt & a, const pt & b){
+			return lt(a.x, b.x) ||
+			(eq(a.x, b.x) && lt(a.y, b.y));});
 	auto res = build_tr(0, (int)p.size() - 1, p);
 	QuadEdge * e = res.first;
 	vector<QuadEdge*> edges = {e};

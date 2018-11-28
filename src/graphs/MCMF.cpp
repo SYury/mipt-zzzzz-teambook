@@ -3,7 +3,9 @@ struct MCMF{
 	struct FlowEdge{
 		int v, u;
 		long long cap, cost, flow = 0;
-		FlowEdge(int _v, int _u, long long _cap, long long _cost):v(_v), u(_u), cap(_cap), cost(_cost){}
+		FlowEdge(int _v, int _u, long long _cap,
+			long long _cost):v(_v), u(_u),
+			cap(_cap), cost(_cost){}
 	};
 	vector<FlowEdge> edges;
 	vector<vector<int> > adj;
@@ -16,7 +18,8 @@ struct MCMF{
 	vector<long long> dist;
 	set<pair<long long, int> > ds;
 	int qh, qt;
-	void resize(int _n){n = _n; adj.resize(n); pot.resize(n); p.resize(n); dist.resize(n); fb_inq.resize(n);}
+	void resize(int _n){n = _n; adj.resize(n); pot.resize(n);
+		p.resize(n); dist.resize(n); fb_inq.resize(n);}
 	MCMF(){}
 	MCMF(int _n, int _s, int _t){resize(_n); s = _s; t = _t;}
 	void add_edge(int v, int u, long long cap, long long cost){
@@ -40,7 +43,10 @@ struct MCMF{
 				if(e.cap - e.flow == 0)continue;
 				if(pot[e.u] > pot[v] + e.cost){
 					pot[e.u] = pot[v] + e.cost;
-					if(!fb_inq[e.u]){fb_inq[e.u] = true; fb_q.push(e.u);}
+					if(!fb_inq[e.u]){
+						fb_inq[e.u] = true;
+						fb_q.push(e.u);
+					}
 				}
 			}
 		}
@@ -64,7 +70,9 @@ struct MCMF{
 				ds.insert(make_pair(dist[e.u], e.u));
 			}
 		}
-		for(int i = 0; i < n; i++)if(i != s && p[i] != -1)dist[i] = dist[i] - pot[i] + pot[s];
+		for(int i = 0; i < n; i++)
+			if(i != s && p[i] != -1)
+				dist[i] = dist[i] - pot[i] + pot[s];
 		pot.swap(dist);
 	}
 	long long min_cost_no_potential(long long val = flow_inf){
@@ -79,7 +87,8 @@ struct MCMF{
 			while(true){
 				int id = p[v];
 				if(id == -1)break;
-				pushed = min(pushed, edges[id].cap - edges[id].flow);
+				pushed = min(pushed,
+						edges[id].cap - edges[id].flow);
 				v = edges[id].v;
 			}
 			total_flow += pushed;

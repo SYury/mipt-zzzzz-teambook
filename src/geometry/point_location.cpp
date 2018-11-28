@@ -5,7 +5,8 @@ namespace PointLocation{
 	inline int sgn(const ll & x){
 		return le(x, 0) ? eq(x, 0) ? 0 : -1 : 1;
 	}
-	inline bool seg_cmp(const pt & a, const pt & b, const pt & c, const pt & d){
+	inline bool seg_cmp(const pt & a, const pt & b,
+			const pt & c, const pt & d){
 		int val = sgn(a.cross(b, c)) + sgn(a.cross(b, d));
 		if(val != 0)
 			return val > 0;
@@ -27,7 +28,9 @@ namespace PointLocation{
 	};
 	vector<Edge*> solve(vector<Edge*> planar, vector<pt> queries){
 		vector<Edge*> ans(queries.size(), nullptr);
-		auto s = set<decltype(pt::x), std::function<bool(const decltype(pt::x)&, const decltype(pt::x)&)> >(lt);
+		auto s = set<decltype(pt::x),
+			 std::function<bool(const decltype(pt::x)&,
+					 const decltype(pt::x)&)> >(lt);
 		for(pt p : queries)
 			s.insert(p.x);
 		for(Edge *e : planar){
@@ -35,19 +38,36 @@ namespace PointLocation{
 			s.insert(e->r.x);
 		}
 		int cid = 0;
-		auto id = map<decltype(pt::x), int, std::function<bool(const decltype(pt::x)&, const decltype(pt::x)&)> >(lt);
+		auto id = map<decltype(pt::x), int,
+			 std::function<bool(const decltype(pt::x)&,
+					 const decltype(pt::x)&)> >(lt);
 		for(auto x : s)
 			id[x] = cid++;
-		auto t = set<Edge*, std::function<bool(const Edge*, const Edge*)> >([](const Edge* l, const Edge* r){return seg_cmp(l->l, l->r, r->l, r->r);});
-		auto vert = set<pair<decltype(pt::x), int>, std::function<bool(const pair<decltype(pt::x), int>&, const pair<decltype(pt::x), int>&)> >([](const pair<decltype(pt::x), int> & l, const pair<decltype(pt::x), int> & r){if(!eq(l.first, r.first))return lt(l.first, r.first); return l.second < r.second;});
+		auto t = set<Edge*,
+			 std::function<bool(const Edge*, const Edge*)> >
+			([](const Edge* l, const Edge* r){
+			 return seg_cmp(l->l, l->r, r->l, r->r);
+			 });
+		auto vert = set<pair<decltype(pt::x), int>,
+			 std::function<bool(
+					 const pair<decltype(pt::x), int>&,
+					 const pair<decltype(pt::x), int>&)> >(
+					 [](const pair<decltype(pt::x), int> & l,
+						 const pair<decltype(pt::x), int> & r)
+					 {if(!eq(l.first, r.first))return lt(l.first, r.first);
+					 return l.second < r.second;});
 		vector<vector<Query> > qs(cid);
 		for(int i = 0; i < (int)queries.size(); i++){
 			int x = id[queries[i].x];
 			qs[x].push_back(Query{QType::get, i});
 		}
 		for(int i = 0; i < (int)planar.size(); i++){
-			int lx = id[planar[i]->l.x], rx = id[planar[i]->r.x];
-			if(lx > rx){swap(lx, rx); swap(planar[i]->l, planar[i]->r);}
+			int lx = id[planar[i]->l.x],
+			rx = id[planar[i]->r.x];
+			if(lx > rx){
+				swap(lx, rx);
+				swap(planar[i]->l, planar[i]->r);
+			}
 			if(lx == rx){
 				qs[lx].push_back(Query{QType::vert, i});
 			}
@@ -64,17 +84,24 @@ namespace PointLocation{
 					t.erase(planar[q.pos]);
 				}
 				if(q.type == QType::vert){
-					vert.insert(make_pair(min(planar[q.pos]->l.y, planar[q.pos]->r.y), q.pos));
+					vert.insert(make_pair(
+								min(planar[q.pos]->l.y,
+									planar[q.pos]->r.y),
+								q.pos));
 				}
 				if(q.type == QType::add){
 					t.insert(planar[q.pos]);
 				}
 				if(q.type == QType::get){
-					auto jt = vert.upper_bound(make_pair(queries[q.pos].y, planar.size()));
+					auto jt = vert.upper_bound(
+							make_pair(queries[q.pos].y,
+								planar.size()));
 					if(jt != vert.begin()){
 						--jt;
 						int i = jt->second;
-						if(ge(max(planar[i]->l.y, planar[i]->r.y), queries[q.pos].y)){
+						if(ge(max(planar[i]->l.y,
+										planar[i]->r.y),
+									queries[q.pos].y)){
 							ans[q.pos] = planar[i];
 							continue;
 						}
@@ -92,7 +119,8 @@ namespace PointLocation{
 			for(Query q : qs[x]){
 				if(q.type != QType::get)
 					continue;
-				if(ans[q.pos] != nullptr && eq(ans[q.pos]->l.x, ans[q.pos]->r.x))
+				if(ans[q.pos] != nullptr &&
+						eq(ans[q.pos]->l.x, ans[q.pos]->r.x))
 					continue;
 				Edge* e = new Edge;
 				e->l = e->r = queries[q.pos];
@@ -102,7 +130,10 @@ namespace PointLocation{
 					e = nullptr;
 				else
 					e = *(--it);
-				if(ans[q.pos] == nullptr){ans[q.pos] = e; continue;}
+				if(ans[q.pos] == nullptr){
+					ans[q.pos] = e;
+					continue;
+				}
 				if(e == nullptr)continue;
 				if(e == ans[q.pos])continue;
 				if(id[ans[q.pos]->r.x] == x){

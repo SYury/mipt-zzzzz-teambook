@@ -1,6 +1,7 @@
 const long double eps = 1e-8;
 
-int gauss(vector<vector<long double> > a, vector<long double> & ans){
+int gauss(vector<vector<long double> > a,
+		vector<long double> & ans){
 	int n = (int)a.size();
 	int m = (int)a[0].size() - 1;
 	vector<int> where(m, -1);

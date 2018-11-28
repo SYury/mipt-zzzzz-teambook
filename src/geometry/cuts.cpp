@@ -1,4 +1,5 @@
-vector<pt> cutConvex(Polygon p, Line ln, Polygon & l, Polygon & r){
+vector<pt> cutConvex(Polygon p, Line ln,
+		Polygon & l, Polygon & r){
 	int n = p.size();
 	l.clear(); r.clear();
 	bool side = false;
@@ -18,18 +19,22 @@ vector<pt> cutConvex(Polygon p, Line ln, Polygon & l, Polygon & r){
 		}
 		pt curr = cand[0];
 		if(curr == p[i]){
-			if(!side){l.push_back(p[i]); l.push_back(p[j]); }else {r.push_back(p[i]); r.push_back(p[j]);}
+			if(!side){l.push_back(p[i]); l.push_back(p[j]);}
+			else {r.push_back(p[i]); r.push_back(p[j]);}
 			continue;
 		}
 		if(curr == p[j]){
 			cutp.push_back(p[j]);
-			if(!side)l.push_back(p[j]); else r.push_back(p[j]);
+			if(!side)l.push_back(p[j]);
+			else r.push_back(p[j]);
 			side = !side;
 			continue;
 		}
 		cutp.push_back(curr);
-		if(!side){l.push_back(curr); r.push_back(curr); r.push_back(p[j]);}
-		else {r.push_back(curr); l.push_back(curr); l.push_back(p[j]);}
+		if(!side){l.push_back(curr); r.push_back(curr);
+			r.push_back(p[j]);}
+		else {r.push_back(curr); l.push_back(curr);
+			l.push_back(p[j]);}
 		side = !side;
 	}
 	if(cutp.size() == 1){
@@ -46,14 +51,19 @@ dbl cutPolygon(Polygon & p, Line l){
 		int j = p.nxt(i);
 		int is = l.signPoint(p[i]), js = l.signPoint(p[j]);
 		if(is == js)continue;
-		dbl pos = (l[1] - l[0]).dot(interLineLine(l, Line(p[i], p[j]))[0] - l[0])/(l[1] - l[0]).length();
-		if(is < js)events.push_back(make_pair(pos, is && js ? 2 : 1));
-		else events.push_back(make_pair(pos, is && js ? -2 : -1));
+		dbl pos = (l[1] - l[0]).dot(interLineLine(l,
+					Line(p[i], p[j]))[0] - l[0])/
+			(l[1] - l[0]).length();
+		if(is < js)
+			events.push_back(make_pair(pos, is && js ? 2 : 1));
+		else
+			events.push_back(
+					make_pair(pos, is && js ? -2 : -1));
 	}
 	sort(events.begin(), events.end());
 	int bal = 0;
 	dbl ans = 0;
-	F(i, 0, (int)events.size()){
+	for(int i = 0; i < (int)events.size(); i++){
 		if(bal)ans += events[i].first - events[i - 1].first;
 		bal += events[i].second;
 	}
