@@ -3,8 +3,7 @@ typedef long long ll;
 const ll inf = (ll)1e18 + 18;
 const int N = 505;
 
-ll gr[N][N];
-ll w[N];
+ll gr[N][N], w[N];
 bool alive[N];
 int n;
 

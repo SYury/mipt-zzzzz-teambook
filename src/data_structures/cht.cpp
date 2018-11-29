@@ -1,5 +1,4 @@
-//from 
-//github.com/niklasb/contest-algos/blob/master/convex_hull/dynamic.cpp
+//from github.com/niklasb/contest-algos/blob/master/convex_hull/dynamic.cpp
 const ll is_query = -(1LL<<62);
 struct Line {
     ll m, b;
